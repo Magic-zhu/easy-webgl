@@ -4,6 +4,9 @@
   "description": "a javascript library make webgl more easy to use",
   "main": "index.ts",
   "scripts": {
+    "start": "rollup -c -w",
+    "build": "rollup -c",
+    "doc": "typedoc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +30,9 @@
     "eslint": "^8.4.1",
     "eslint-config-google": "^0.14.0",
     "rollup": "^2.60.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "typedoc": "^0.22.10",
     "typescript": "^4.5.2"
   }
 }
