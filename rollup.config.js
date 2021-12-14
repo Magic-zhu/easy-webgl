@@ -5,17 +5,18 @@ export default [{
   input: 'src/index.ts',
   output: [
     {
-      file: 'dist/easy-webgl-iife.min.js',
+      file: './dist/easy-webgl-iife.min.js',
       format: 'iife',
       name:'EW'
     },
     {
-      file: 'dist/easy-webgl-es.min.js',
-      format: 'EW'
+      file: './dist/easy-webgl-es.min.js',
+      format: 'es',
+      name: 'EW'
     }
   ],
   plugins: [
     typescript(),
-    terser(),
+    // terser(),
   ],
 }]

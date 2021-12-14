@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../dist/easy-webgl-iife.min.js"></script>
+</head>
+<body>
+  <canvas id="app" width='500' height='500'></canvas>
+</body>
+<script>
+  const lineVertexShader = () => {
+  return `
+    attribute vec2 position;
+    void main() {
+      gl_Position = vec4(vec2,1.0,1.0);
+    }
+  `;
+};
+const lineFragmentShader = (r, g, b) => {
+  return `
+    void main(){
+      gl_FragColor = vec4(${r}, ${g}, ${b}, 1.0)
+    }
+  `;
+};
+  const {createContext,createShaderProgram} = EW
+  const gl = createContext('#app')
+  console.log(lineVertexShader())
+  createShaderProgram(gl,lineVertexShader(),lineFragmentShader(0.5,1.0,1.0))
+  const points = [
+    -1,1,1,-1
+  ]
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,points,gl.STATIC_DRAW);
+  gl.drawArrays(gl.LINES, 0, 2);
+</script>
+</html>
