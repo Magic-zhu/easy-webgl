@@ -1,9 +1,9 @@
-import {Warn, WARN_LEVEL} from 'src/utils/index';
+import {warn, WARN_LEVEL} from '../utils';
 export let isWebGl2 = true;
 export const createContext = (query: string) => {
   const dom: HTMLCanvasElement = document.querySelector(query);
   if (!dom) {
-    Warn('Dom is not available!');
+    warn('Dom is not available!');
     return;
   }
   let gl: WebGLRenderingContext = dom.getContext('webgl2');
@@ -12,7 +12,7 @@ export const createContext = (query: string) => {
     isWebGl2 = false;
   }
   if (!gl) {
-    Warn('not support WebGL。', WARN_LEVEL.ERROR);
+    warn('not support WebGL!', WARN_LEVEL.ERROR);
   }
   return gl;
 };
@@ -28,15 +28,16 @@ export const loadShader = (
     source: string, // ~ shader string
 ) => {
   const shader =
-    type == 'vs' ?
+    type === 'vs' ?
       gl.createShader(gl.VERTEX_SHADER) :
       gl.createShader(gl.FRAGMENT_SHADER); // 创建
   gl.shaderSource(shader, source); // 设置
+  console.log(gl, type, source, shader);
   gl.compileShader(shader); // 编译
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     gl.deleteShader(shader);
-    throw new Error(
-        'An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader),
+    throw new Error('An error occurred compiling the shaders: ' +
+      gl.getShaderInfoLog(shader),
     );
   }
   return shader;

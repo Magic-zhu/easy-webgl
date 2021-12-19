@@ -1,12 +1,12 @@
-const lineVertexShader = () => {
+export const lineVertexShader = () => {
   return `
-    attribute vec2 position;
+    attribute vec4 a_position;
     void main() {
-      gl_Position = vec4(vec2,1.0,1.0);
+      gl_Position = a_position;
     }
   `;
 };
-const lineFragmentShader = (r: number, g: number, b: number) => {
+export const lineFragmentShader = (r: number, g: number, b: number) => {
   return `
     gl_FragColor = vec4(${r}, ${g}, ${b}, 1.0)
   `;

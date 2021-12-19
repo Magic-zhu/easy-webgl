@@ -1,4 +1,4 @@
 
-const canvasToWebglCoordinate = (x,y) => {
+const canvasToWebglCoordinate = (x, y) => {
 
-}
+};

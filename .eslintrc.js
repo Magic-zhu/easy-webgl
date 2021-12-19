@@ -5,7 +5,6 @@ module.exports = {
   },
   'extends': [
     'google',
-    'prettier',
   ],
   'parser': '@typescript-eslint/parser',
   'parserOptions': {
@@ -16,5 +15,8 @@ module.exports = {
     '@typescript-eslint',
   ],
   'rules': {
+    'no-unused-vars': 'off',
+    'require-jsdoc': 'off',
+    'valid-jsdoc': 'off',
   },
 };
