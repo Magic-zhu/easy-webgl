@@ -3,4 +3,4 @@ export declare enum WARN_LEVEL {
     'DANGER' = 2,
     'ERROR' = 3
 }
-export declare const Warn: (err: string, level?: WARN_LEVEL) => void;
+export declare const warn: (err: string, level?: WARN_LEVEL) => void;

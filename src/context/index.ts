@@ -1,5 +1,4 @@
 import {createContext, createShaderProgram} from 'src/core/';
-import {lineVertexShader, lineFragmentShader} from 'src/shader/line';
 
 export class EwContext {
   gl: WebGLRenderingContext | null = null;

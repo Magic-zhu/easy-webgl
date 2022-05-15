@@ -1,5 +1,5 @@
 /**
- *
+ * code refer to 'threejs'
  * @class Vector2
  */
 class Vector2 {
@@ -81,7 +81,6 @@ class Vector2 {
 
   // 向量相减
   sub(v: Vector2) {
-
     this.x -= v.x;
     this.y -= v.y;
 
@@ -128,8 +127,8 @@ class Vector2 {
   }
 
   applyMatrix3(m) {
-    const x = this.x,
-      y = this.y;
+    const x = this.x;
+    const y = this.y;
     const e = m.elements;
 
     this.x = e[0] * x + e[3] * y + e[6];
@@ -172,7 +171,7 @@ class Vector2 {
     const length = this.length();
 
     return this.divideScalar(length || 1).multiplyScalar(
-      Math.max(min, Math.min(max, length))
+        Math.max(min, Math.min(max, length)),
     );
   }
 
@@ -241,8 +240,8 @@ class Vector2 {
   }
 
   distanceToSquared(v) {
-    const dx = this.x - v.x,
-      dy = this.y - v.y;
+    const dx = this.x - v.x;
+    const dy = this.y - v.y;
     return dx * dx + dy * dy;
   }
 
@@ -289,7 +288,7 @@ class Vector2 {
   fromBufferAttribute(attribute, index, offset) {
     if (offset !== undefined) {
       console.warn(
-        'THREE.Vector2: offset has been removed from .fromBufferAttribute().'
+          'THREE.Vector2: offset has been removed from .fromBufferAttribute().',
       );
     }
 
@@ -300,8 +299,8 @@ class Vector2 {
   }
 
   rotateAround(center, angle) {
-    const c = Math.cos(angle),
-      s = Math.sin(angle);
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
 
     const x = this.x - center.x;
     const y = this.y - center.y;
@@ -322,4 +321,4 @@ class Vector2 {
 
 Vector2.prototype.isVector2 = true;
 
-export { Vector2 };
+export {Vector2};

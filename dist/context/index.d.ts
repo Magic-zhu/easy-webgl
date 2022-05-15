@@ -1,6 +1,8 @@
-declare class EwContext {
+export declare class EwContext {
     gl: WebGLRenderingContext | null;
     program: null | WebGLProgram;
+    strokeStyle: string;
+    strokeRgb: number[];
     constructor(query: string);
     beginPath(): void;
     closePath(): void;
@@ -13,4 +15,3 @@ declare class EwContext {
     stroke(): void;
     strokeRect(x: number, y: number, width: number, height: number): void;
 }
-export default EwContext;
