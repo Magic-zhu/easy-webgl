@@ -2,47 +2,48 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <script src="../dist/easy-webgl-iife.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../dist/easy-webgl-iife.min.js"></script>
 </head>
 
 <body>
-  <canvas id="app" width='500' height='500' style="background-color: #333333"></canvas>
+    <canvas id="app" width='500' height='500' style="background-color: #333333"></canvas>
 </body>
 <script>
-  const lineVertexShader = () => {
-    return /*glsl*/`
+    const lineVertexShader = () => {
+        return /*glsl*/`
       attribute vec4 a_position;
       void main() {
         gl_PointSize = 20.0;
         gl_Position = a_position;
       }
       `;
-  };
-  const pointsFragmentShader = () => {
-    return /*glsl*/`
+    };
+    const pointsFragmentShader = () => {
+        return /*glsl*/`
       void main(){
         gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
       }
     `;
-  };
-  const { createContext, createShaderProgram, initBuffers } = EW
-  const gl = createContext('#app');
-  const shaderProgram = createShaderProgram(gl, lineVertexShader(), pointsFragmentShader(1.0, 0.5, 0.0))
-  const points = [
-    0, 0, 0, 1,
-    1, 1, 0, 1,
-    -1, 1, 0, 1
-  ]
-  initBuffers(gl, points)
-  vertexPosition = gl.getAttribLocation(shaderProgram, 'a_position')
-  gl.vertexAttribPointer(vertexPosition, 4, gl.FLOAT, false, 0, 0)
-  gl.enableVertexAttribArray(vertexPosition);
-  gl.drawArrays(gl.POINT, 0, 2);
-  gl.drawArrays(gl.LINES, 0, 2);
+    };
+    const { createContext, createShaderProgram, initBuffers } = EW
+    const gl = createContext('#app');
+    const shaderProgram = createShaderProgram(gl, lineVertexShader(), pointsFragmentShader(1.0, 0.5, 0.0))
+    const points = [
+        0.5, 0, 0, 1,
+        1, 1, 0, 1,
+        -0.5, 0.5, 0, 1,
+        -0.5, -0.5, 0, 1,
+    ]
+    initBuffers(gl, points)
+    vertexPosition = gl.getAttribLocation(shaderProgram, 'a_position')
+    gl.vertexAttribPointer(vertexPosition, 4, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(vertexPosition);
+    gl.drawArrays(gl.POINT, 0, 4);
+    gl.drawArrays(gl.LINE_STRIP, 0, 4);
 </script>
 
 </html>
