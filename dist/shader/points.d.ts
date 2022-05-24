@@ -1,2 +1,2 @@
-export declare const lineVertexShader: () => string;
-export declare const lineFragmentShader: (r: number, g: number, b: number) => string;
+export declare const pointsVertexShader: () => string;
+export declare const pointsFragmentShader: (r: number, g: number, b: number) => string;

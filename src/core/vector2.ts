@@ -1,5 +1,5 @@
 /**
- * code refer to 'threejs'
+ * code from 'threejs'
  * @class Vector2
  */
 class Vector2 {

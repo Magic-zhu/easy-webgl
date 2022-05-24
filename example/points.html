@@ -18,32 +18,31 @@
       attribute vec4 a_position;
       void main() {
         gl_PointSize = 20.0;
-        gl_Position =  vec4(0.0,0.0,0.0,1.0);
+        gl_Position = a_position;
       }
       `;
   };
-  // const lineFragmentShader = () => {
-  //   return /*glsl*/`
-  //     void main(){
-  //       gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
-  //     }
-  //   `;
-  // };
-  const { createContext, createShaderProgram, } = EW
+  const pointsFragmentShader = () => {
+    return /*glsl*/`
+      void main(){
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+      }
+    `;
+  };
+  const { createContext, createShaderProgram, initBuffers } = EW
   const gl = createContext('#app');
-
-
-  const shaderProgram = createShaderProgram(gl, lineVertexShader(), pointsFragmentShader(1.0,0.5,0.0))
-  // const positionBuffer = gl.createBuffer();
-  // vertexPosition = gl.getAttribLocation(shaderProgram, 'a_Position')
-  // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  // const points = [
-  //   -1, 1, 1, -1
-  // ]
-  // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(points), gl.STATIC_DRAW);
-  // gl.vertexAttribPointer(vertexPosition,2,gl.FLOAT,false,2,0)
-  // gl.enableVertexAttribArray(vertexPosition);
-  gl.drawArrays(gl.POINTS, 0, 1);
+  const shaderProgram = createShaderProgram(gl, lineVertexShader(), pointsFragmentShader(1.0, 0.5, 0.0))
+  const points = [
+    0, 0, 0, 1,
+    1, 1, 0, 1,
+    -1, 1, 0, 1
+  ]
+  initBuffers(gl, points)
+  vertexPosition = gl.getAttribLocation(shaderProgram, 'a_position')
+  gl.vertexAttribPointer(vertexPosition, 4, gl.FLOAT, false, 0, 0)
+  gl.enableVertexAttribArray(vertexPosition);
+  gl.drawArrays(gl.POINT, 0, 2);
+  gl.drawArrays(gl.LINES, 0, 2);
 </script>
 
 </html>
