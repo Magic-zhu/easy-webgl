@@ -1,1 +1,4 @@
-declare const canvasToWebglCoordinate: (x: any, y: any) => void;
+export declare const canvasToWebglCoordinate: (x: number, y: number) => {
+    x: number;
+    y: number;
+};
