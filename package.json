@@ -2,7 +2,9 @@
   "name": "easy-webgl",
   "version": "1.0.0",
   "description": "a javascript library make webgl more easy to use",
-  "main": "index.ts",
+  "main": "dist/easy-webgl-es.min.js",
+  "module": "dist/easy-webgl-es.min.js",
+  "files": ["dist"],
   "scripts": {
     "start": "rollup -c -w",
     "build": "rollup -c",
