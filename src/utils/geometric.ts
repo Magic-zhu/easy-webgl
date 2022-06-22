@@ -16,7 +16,6 @@ export const offsetLine = (
   const k = (endPoint.y - startPoint.y) / (endPoint.x - startPoint.x)
   const tx = Math.sqrt(Math.pow(distance, 2) / (1 + Math.pow(k, 2)))
   const ty = k * tx
-  console.log(tx, ty, endPoint.y + ty)
   return [
     new Point(startPoint.x - tx, startPoint.y + ty),
     new Point(endPoint.x - tx, endPoint.y + ty),

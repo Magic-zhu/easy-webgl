@@ -8,7 +8,6 @@ interface LineOption {
 }
 export declare class Line extends Shape {
     constructor(option: LineOption);
-    draw(): void;
 }
 export declare class LineW extends Line {
     constructor(option: LineOption);

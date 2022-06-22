@@ -9,9 +9,7 @@ interface LineOption {
 export class Line extends Shape {
   constructor(option: LineOption) {
     super()
-    this.draw()
   }
-  draw() {}
 }
 
 export class LineW extends Line {

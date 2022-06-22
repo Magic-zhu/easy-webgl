@@ -1,5 +1,8 @@
 export declare let isWebGl2: boolean;
-export declare const createContext: (query: string) => WebGLRenderingContext;
+export declare const createContext: (query: string) => {
+    gl: WebGLRenderingContext;
+    dom: HTMLCanvasElement;
+};
 export declare enum ShaderType {
     'VERTEX_SHADER' = "vs",
     'FRAGMENT_SHADER' = "fs"

@@ -14,7 +14,7 @@ export const createContext = (query: string) => {
   if (!gl) {
     warn('not support WebGL!', WARN_LEVEL.ERROR)
   }
-  return gl
+  return { gl, dom }
 }
 
 export enum ShaderType {
@@ -32,7 +32,6 @@ export const loadShader = (
       ? gl.createShader(gl.VERTEX_SHADER)
       : gl.createShader(gl.FRAGMENT_SHADER) // 创建
   gl.shaderSource(shader, source) // 设置
-  console.log(gl, type, source, shader)
   gl.compileShader(shader) // 编译
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     gl.deleteShader(shader)
