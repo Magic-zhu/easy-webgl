@@ -1,8 +1,8 @@
-import { createContext, Point, Scene } from 'src/core/'
-import { Line } from 'src/core/Line'
+import { createContext, Point, Texture } from 'src/core/'
 import { warn } from 'src/utils'
 import { pointsVertexShader, pointsFragmentShader } from 'src/shader/points'
 import { createShaderProgram, initBuffers } from 'src/core/base'
+import { loadImage } from '../index'
 export class EwContext {
   gl: WebGLRenderingContext | null = null
   program: null | WebGLProgram = null
@@ -12,8 +12,6 @@ export class EwContext {
   _path = []
   _pathArray = []
   _pathStatus = 'end'
-  // * 划分区域 用于后续的优化
-  _scene: Scene = new Scene()
   // * 目标dom
   _target: HTMLCanvasElement
 
@@ -69,7 +67,75 @@ export class EwContext {
     gl.clearDepth(1.0)
   }
 
-  drawImage() {}
+  // proxy
+  drawImage(...args: any[]) {
+    if (args.length === 3) {
+      this._drawImageA(args[0], args[1], args[2])
+    }
+    if (args.length === 5) {
+      this._drawImageB(args[0], args[1], args[2], args[3], args[4])
+    }
+    if (args.length === 9) {
+      this._drawImageC(
+        args[0],
+        args[1],
+        args[2],
+        args[3],
+        args[4],
+        args[5],
+        args[6],
+        args[7],
+        args[8]
+      )
+    }
+  }
+  private _loadAndCreateTexture(
+    _img: string | HTMLImageElement,
+    gl: WebGLRenderingContext | WebGL2RenderingContext
+  ) {
+    return new Promise((resolve) => {
+      if (typeof _img === 'string') {
+        loadImage(_img, (ele: HTMLImageElement) => {
+          const tx = new Texture()
+          tx.width = ele.width
+          tx.height = ele.height
+          gl.bindTexture(gl.TEXTURE_2D, tx.texture)
+          gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            ele
+          )
+          resolve(tx)
+        })
+      }
+    })
+  }
+  private _drawImageA(
+    image: string | HTMLImageElement,
+    dx: number,
+    dy: number
+  ) {}
+  private _drawImageB(
+    image: string | HTMLImageElement,
+    dx: number,
+    dy: number,
+    dWidth: number,
+    dHeight: number
+  ) {}
+  private _drawImageC(
+    image: string | HTMLImageElement,
+    sx: number,
+    sy: number,
+    sWidth: number,
+    sHeight: number,
+    dx: number,
+    dy: number,
+    dWidth: number,
+    dHeight: number
+  ) {}
 
   fillRect(x: number, y: number, width: number, height: number) {}
 
@@ -89,7 +155,6 @@ export class EwContext {
           0,
           1
         )
-        this._scene.add(new Line({ beginPoint, endPoint, gl: this.gl }))
       }
     }
 

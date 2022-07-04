@@ -1,6 +1,5 @@
 import { canvasToWebglCoordinate } from './canvasToWebglCoordinate'
-import { Shape } from './Shape'
-export class Point extends Shape {
+export class Point {
   x: number = 0
   y: number = 0
   constructor(
@@ -10,7 +9,6 @@ export class Point extends Shape {
     canvasWidth?: number,
     canvasHeight?: number
   ) {
-    super()
     if (toWebGl) {
       const { x, y } = canvasToWebglCoordinate(
         ix,

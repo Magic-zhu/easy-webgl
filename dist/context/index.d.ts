@@ -18,7 +18,10 @@ export declare class EwContext {
     init(query: string): void;
     clearRect(): void;
     clear(): void;
-    drawImage(): void;
+    drawImage(...args: any[]): void;
+    private _drawImageA;
+    private _drawImageB;
+    private _drawImageC;
     fillRect(x: number, y: number, width: number, height: number): void;
     stroke(): void;
     strokeRect(x: number, y: number, width: number, height: number): void;
