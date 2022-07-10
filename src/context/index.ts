@@ -1,6 +1,11 @@
 import { createContext, Point, Texture } from 'src/core/'
 import { warn } from 'src/utils'
-import { pointsVertexShader, pointsFragmentShader } from 'src/shader/points'
+import {
+  pointsVertexShader,
+  pointsFragmentShader,
+  imagePointShader_A,
+  imageFragmentShader_A,
+} from 'src/shader'
 import { createShaderProgram, initBuffers } from 'src/core/base'
 import { loadImage } from '../index'
 export class EwContext {
@@ -92,7 +97,7 @@ export class EwContext {
   private _loadAndCreateTexture(
     _img: string | HTMLImageElement,
     gl: WebGLRenderingContext | WebGL2RenderingContext
-  ) {
+  ): Promise<Texture> {
     return new Promise((resolve) => {
       if (typeof _img === 'string') {
         loadImage(_img, (ele: HTMLImageElement) => {
@@ -113,11 +118,20 @@ export class EwContext {
       }
     })
   }
-  private _drawImageA(
+  private async _drawImageA(
     image: string | HTMLImageElement,
     dx: number,
     dy: number
-  ) {}
+  ) {
+    const texture: Texture = await this._loadAndCreateTexture(image, this.gl)
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture)
+    const program = createShaderProgram(
+      this.gl,
+      imagePointShader_A,
+      imageFragmentShader_A
+    )
+    this.gl.useProgram(program)
+  }
   private _drawImageB(
     image: string | HTMLImageElement,
     dx: number,
