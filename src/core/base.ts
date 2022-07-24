@@ -66,12 +66,26 @@ export const createShaderProgram = (
   return shaderProgram
 }
 
+/**
+ * 初始化顶点buffer
+ * @param gl
+ * @param vertices - 顶点数据
+ * @return {WebGLBuffer}
+ */
 export const initBuffers = (
   gl: WebGL2RenderingContext | WebGLRenderingContext,
   vertices: number[]
-) => {
+):WebGLBuffer => {
   const positionBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
   return positionBuffer
+}
+
+// * 设置属性，从缓冲中提取数据
+// todo
+export const injectAttribute2D = (gl:WebGLRenderingContext|WebGL2RenderingContext,buffer:WebGLBuffer,data:GLint) => {
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.enableVertexAttribArray(data);
+  gl.vertexAttribPointer(data, 2, gl.FLOAT, false, 0, 0);
 }

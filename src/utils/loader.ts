@@ -1,5 +1,5 @@
 export const loadImage = (url: string, callback: Function) => {
-  const img = new Image()
+  const img = document.createElement('img')
   img.src = url
   img.addEventListener('load', () => {
     callback(img)

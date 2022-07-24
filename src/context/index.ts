@@ -1,4 +1,4 @@
-import { createContext, Point, Texture } from 'src/core/'
+import { createContext, Point, Texture, injectAttribute2D } from 'src/core/'
 import { warn } from 'src/utils'
 import {
   pointsVertexShader,
@@ -61,6 +61,7 @@ export class EwContext {
     const { gl, dom } = createContext(query)
     this.gl = gl
     this._target = dom
+    this.gl.viewport(0,0,dom.width,dom.height)
   }
 
   clearRect() {}
@@ -131,6 +132,30 @@ export class EwContext {
       imageFragmentShader_A
     )
     this.gl.useProgram(program)
+    // 获取参数信息
+    const positionLocation:GLint = this.gl.getAttribLocation(program, "a_position");
+    const texcoordLocation:GLint = this.gl.getAttribLocation(program, "a_texcoord");
+    // 初始化顶点数据buffer
+    const positionBuffer = initBuffers(this.gl,[
+      0, 0,
+      0, 1,
+      1, 0,
+      1, 0,
+      0, 1,
+      1, 1,])
+    const texcoordBuffer = initBuffers(this.gl,[
+      0, 0,
+      0, 1,
+      1, 0,
+      1, 0,
+      0, 1,
+      1, 1,
+    ])
+    // 设置属性
+    injectAttribute2D(this.gl,positionBuffer,positionLocation)
+    injectAttribute2D(this.gl,texcoordBuffer,texcoordLocation)
+    // 两个三角形
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
   }
   private _drawImageB(
     image: string | HTMLImageElement,

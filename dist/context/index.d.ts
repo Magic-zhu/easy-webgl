@@ -1,4 +1,3 @@
-import { Scene } from 'src/core/';
 export declare class EwContext {
     gl: WebGLRenderingContext | null;
     program: null | WebGLProgram;
@@ -8,7 +7,6 @@ export declare class EwContext {
     _path: any[];
     _pathArray: any[];
     _pathStatus: string;
-    _scene: Scene;
     _target: HTMLCanvasElement;
     constructor(query: string);
     beginPath(): void;
@@ -19,6 +17,7 @@ export declare class EwContext {
     clearRect(): void;
     clear(): void;
     drawImage(...args: any[]): void;
+    private _loadAndCreateTexture;
     private _drawImageA;
     private _drawImageB;
     private _drawImageC;
