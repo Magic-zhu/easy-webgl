@@ -1,4 +1,4 @@
-export class Matrix4 extends Float32Array {
+export class Matrix4 extends Array {
   constructor() {
     super()
     for (let i = 0; i < 16; i++) {

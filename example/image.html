@@ -1,22 +1,18 @@
-Easy WebGl
+<!DOCTYPE html>
+<html lang='en'>
 
-The goal is to make the api as same as canvas2d
+<head>
+  <meta charset='UTF-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Main Test Html</title>
+  <script src='../dist/easy-webgl-iife.min.js'></script>
+</head>
 
-```js
-  const { EwContext } = EW
-  const ctx = new EwContext("#app")
-  ctx.beginPath()
-  ctx.moveTo(0, 0)
-  ctx.lineTo(250, 250)
-  ctx.lineTo(500, 0)
-  ctx.lineTo(500, 500)
-  ctx.closePath()
-  ctx.stroke()
-```
-
-![](https://files.catbox.moe/kxhip8.png)
-
-```js
+<body>
+<canvas id='app' width='500' height='500'></canvas>
+</body>
+<script>
   const { EwContext } = EW
   const ctx = new EwContext('#app')
   ctx.drawImage(
@@ -29,8 +25,6 @@ The goal is to make the api as same as canvas2d
     0, 0,
     200,200
   )
-```
+</script>
 
-![](https://files.catbox.moe/2h7g8m.png)
-
-
+</html>

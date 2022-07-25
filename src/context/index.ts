@@ -1,13 +1,14 @@
-import { createContext, Point, Texture, injectAttribute2D } from 'src/core/'
+import { createContext, Point, Texture, injectAttribute2D, Matrix4 } from 'src/core/'
 import { warn } from 'src/utils'
 import {
   pointsVertexShader,
   pointsFragmentShader,
   imagePointShader_A,
-  imageFragmentShader_A,
+  imageFragmentShader_A
 } from 'src/shader'
 import { createShaderProgram, initBuffers } from 'src/core/base'
 import { loadImage } from '../index'
+
 export class EwContext {
   gl: WebGLRenderingContext | null = null
   program: null | WebGLProgram = null
@@ -61,10 +62,11 @@ export class EwContext {
     const { gl, dom } = createContext(query)
     this.gl = gl
     this._target = dom
-    this.gl.viewport(0,0,dom.width,dom.height)
+    this.gl.viewport(0, 0, dom.width, dom.height)
   }
 
-  clearRect() {}
+  clearRect() {
+  }
 
   clear() {
     const { gl } = this
@@ -95,6 +97,7 @@ export class EwContext {
       )
     }
   }
+
   private _loadAndCreateTexture(
     _img: string | HTMLImageElement,
     gl: WebGLRenderingContext | WebGL2RenderingContext
@@ -103,9 +106,13 @@ export class EwContext {
       if (typeof _img === 'string') {
         loadImage(_img, (ele: HTMLImageElement) => {
           const tx = new Texture()
+          tx.texture = gl.createTexture()
+          gl.bindTexture(gl.TEXTURE_2D, tx.texture)
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
           tx.width = ele.width
           tx.height = ele.height
-          gl.bindTexture(gl.TEXTURE_2D, tx.texture)
           gl.texImage2D(
             gl.TEXTURE_2D,
             0,
@@ -119,13 +126,24 @@ export class EwContext {
       }
     })
   }
+
   private async _drawImageA(
     image: string | HTMLImageElement,
     dx: number,
     dy: number
   ) {
-    const texture: Texture = await this._loadAndCreateTexture(image, this.gl)
-    this.gl.bindTexture(this.gl.TEXTURE_2D, texture)
+    this._drawImageB(image, dx, dy)
+  }
+
+  private async _drawImageB(
+    image: string | HTMLImageElement,
+    dx: number,
+    dy: number,
+    dWidth?: number,
+    dHeight?: number
+  ) {
+    const tx: Texture = await this._loadAndCreateTexture(image, this.gl)
+    this.gl.bindTexture(this.gl.TEXTURE_2D, tx.texture)
     const program = createShaderProgram(
       this.gl,
       imagePointShader_A,
@@ -133,37 +151,45 @@ export class EwContext {
     )
     this.gl.useProgram(program)
     // 获取参数信息
-    const positionLocation:GLint = this.gl.getAttribLocation(program, "a_position");
-    const texcoordLocation:GLint = this.gl.getAttribLocation(program, "a_texcoord");
+    const positionLocation: GLint = this.gl.getAttribLocation(program, 'a_position')
+    const texcoordLocation: GLint = this.gl.getAttribLocation(program, 'a_texcoord')
+    const matrixLocation = this.gl.getUniformLocation(program, 'u_matrix')
+    const textureLocation = this.gl.getUniformLocation(program, 'u_texture')
+
     // 初始化顶点数据buffer
-    const positionBuffer = initBuffers(this.gl,[
+    const positionBuffer = initBuffers(this.gl, [
       0, 0,
       0, 1,
       1, 0,
       1, 0,
       0, 1,
-      1, 1,])
-    const texcoordBuffer = initBuffers(this.gl,[
+      1, 1])
+    const texcoordBuffer = initBuffers(this.gl, [
       0, 0,
       0, 1,
       1, 0,
       1, 0,
       0, 1,
-      1, 1,
+      1, 1
     ])
-    // 设置属性
-    injectAttribute2D(this.gl,positionBuffer,positionLocation)
-    injectAttribute2D(this.gl,texcoordBuffer,texcoordLocation)
-    // 两个三角形
-    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+
+    // set attribute
+    injectAttribute2D(this.gl, positionBuffer, positionLocation)
+    injectAttribute2D(this.gl, texcoordBuffer, texcoordLocation)
+
+    let matrix = new Matrix4()
+      .orthographic(0, this._target.width, this._target.height, 0, -1, 1)
+      .translate(dx, dy, 0)
+      .scale(dWidth || tx.width, dHeight || tx.height, 1)
+
+    // Set the matrix.
+    this.gl.uniformMatrix4fv(matrixLocation, false, matrix)
+    // get the texture from texture unit 0
+    this.gl.uniform1i(textureLocation, 0)
+    // 2 triangles, 6 vertices
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6)
   }
-  private _drawImageB(
-    image: string | HTMLImageElement,
-    dx: number,
-    dy: number,
-    dWidth: number,
-    dHeight: number
-  ) {}
+
   private _drawImageC(
     image: string | HTMLImageElement,
     sx: number,
@@ -174,9 +200,11 @@ export class EwContext {
     dy: number,
     dWidth: number,
     dHeight: number
-  ) {}
+  ) {
+  }
 
-  fillRect(x: number, y: number, width: number, height: number) {}
+  fillRect(x: number, y: number, width: number, height: number) {
+  }
 
   stroke() {
     const renderPoints = []
@@ -215,5 +243,6 @@ export class EwContext {
     }
   }
 
-  strokeRect(x: number, y: number, width: number, height: number) {}
+  strokeRect(x: number, y: number, width: number, height: number) {
+  }
 }
