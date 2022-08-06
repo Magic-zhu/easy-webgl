@@ -171,7 +171,6 @@ export class EwContext {
       1, 1
     ])
 
-    // set attribute
     injectAttribute2D(this.gl, positionBuffer, positionLocation)
     injectAttribute2D(this.gl, texcoordBuffer, texcoordLocation)
 
@@ -214,11 +213,11 @@ export class EwContext {
         renderPoints.push(
           beginPoint.x,
           beginPoint.y,
-          0,
+          1,
           1,
           endPoint.x,
           endPoint.y,
-          0,
+          1,
           1
         )
       }
@@ -226,12 +225,12 @@ export class EwContext {
 
     if (this.lineWidth === 1) {
       const color = toRgb(this.strokeStyle)
+      initBuffers(this.gl, renderPoints)
       const shaderProgram = createShaderProgram(
         this.gl,
         pointsVertexShader(),
         pointsFragmentShader(color[0], color[1], color[2])
       )
-      initBuffers(this.gl, renderPoints)
       const vertexPosition = this.gl.getAttribLocation(
         shaderProgram,
         'p_position'
@@ -239,6 +238,7 @@ export class EwContext {
       this.gl.vertexAttribPointer(vertexPosition, 4, this.gl.FLOAT, false, 0, 0)
       this.gl.enableVertexAttribArray(vertexPosition)
       this.gl.drawArrays(this.gl.LINES, 0, renderPoints.length / 4)
+      this.gl.deleteProgram(shaderProgram)
     } else {
     }
   }

@@ -85,7 +85,6 @@ export const initBuffers = (
 // * 设置属性，从缓冲中提取数据
 // todo
 export const injectAttribute2D = (gl:WebGLRenderingContext|WebGL2RenderingContext,buffer:WebGLBuffer,data:GLint) => {
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.enableVertexAttribArray(data);
   gl.vertexAttribPointer(data, 2, gl.FLOAT, false, 0, 0);
 }
