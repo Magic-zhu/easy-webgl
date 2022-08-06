@@ -8,6 +8,7 @@ export declare class EwContext {
     _pathArray: any[];
     _pathStatus: string;
     _target: HTMLCanvasElement;
+    _asynTasks: any[];
     constructor(query: string);
     beginPath(): void;
     closePath(): void;

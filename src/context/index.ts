@@ -20,6 +20,8 @@ export class EwContext {
   _pathStatus = 'end'
   // * 目标dom
   _target: HTMLCanvasElement
+  // !! cache the asyn tasks (decide when to draw)
+  _asynTasks = []
 
   /**
    * @param query - id or class string like '.text' or '#text'
@@ -142,50 +144,53 @@ export class EwContext {
     dWidth?: number,
     dHeight?: number
   ) {
-    const tx: Texture = await this._loadAndCreateTexture(image, this.gl)
-    const program = createShaderProgram(
-      this.gl,
-      imagePointShader_A,
-      imageFragmentShader_A
-    )
-    // 获取参数信息
-    const positionLocation: GLint = this.gl.getAttribLocation(program, 'a_position')
-    const texcoordLocation: GLint = this.gl.getAttribLocation(program, 'a_texcoord')
-    const matrixLocation = this.gl.getUniformLocation(program, 'u_matrix')
-    const textureLocation = this.gl.getUniformLocation(program, 'u_texture')
+    const imgStatus = this._loadAndCreateTexture(image, this.gl).then((tx: Texture) => {
+      const program = createShaderProgram(
+        this.gl,
+        imagePointShader_A,
+        imageFragmentShader_A
+      )
+      // 获取参数信息
+      const positionLocation: GLint = this.gl.getAttribLocation(program, 'a_position')
+      const texcoordLocation: GLint = this.gl.getAttribLocation(program, 'a_texcoord')
+      const matrixLocation = this.gl.getUniformLocation(program, 'u_matrix')
+      const textureLocation = this.gl.getUniformLocation(program, 'u_texture')
 
-    // 初始化顶点数据buffer
-    const positionBuffer = initBuffers(this.gl, [
-      0, 0,
-      0, 1,
-      1, 0,
-      1, 0,
-      0, 1,
-      1, 1])
-    const texcoordBuffer = initBuffers(this.gl, [
-      0, 0,
-      0, 1,
-      1, 0,
-      1, 0,
-      0, 1,
-      1, 1
-    ])
+      // 初始化顶点数据buffer
+      initBuffers(this.gl, [
+        0, 0,
+        0, 1,
+        1, 0,
+        1, 0,
+        0, 1,
+        1, 1])
+      initBuffers(this.gl, [
+        0, 0,
+        0, 1,
+        1, 0,
+        1, 0,
+        0, 1,
+        1, 1
+      ])
 
-    injectAttribute2D(this.gl, positionBuffer, positionLocation)
-    injectAttribute2D(this.gl, texcoordBuffer, texcoordLocation)
+      injectAttribute2D(this.gl, positionLocation)
+      injectAttribute2D(this.gl, texcoordLocation)
 
-    let matrix = new Matrix4()
-      .orthographic(0, this._target.width, this._target.height, 0, -1, 1)
-      .scale(dWidth || tx.width, dHeight || tx.height, 1)
-      .translate(dx / this._target.width, dy / this._target.height, 0)
 
-    // Set the matrix.
-    this.gl.uniformMatrix4fv(matrixLocation, false, matrix)
-    // get the texture from texture unit 0
-    this.gl.uniform1i(textureLocation, 0)
-    // 2 triangles, 6 vertices
-    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6)
-    this.gl.deleteProgram(program)
+      let matrix = new Matrix4()
+        .orthographic(0, this._target.width, this._target.height, 0, -1, 1)
+        .scale(dWidth || tx.width, dHeight || tx.height, 1)
+        .translate(dx / this._target.width, dy / this._target.height, 0)
+
+      // Set the matrix.
+      this.gl.uniformMatrix4fv(matrixLocation, false, matrix)
+      // get the texture from texture unit 0
+      this.gl.uniform1i(textureLocation, 0)
+      // 2 triangles, 6 vertices
+      this.gl.drawArrays(this.gl.TRIANGLES, 0, 6)
+      this.gl.deleteProgram(program)
+    })
+    this._asynTasks.push(imgStatus)
   }
 
   private _drawImageC(
@@ -222,25 +227,26 @@ export class EwContext {
         )
       }
     }
-
-    if (this.lineWidth === 1) {
-      const color = toRgb(this.strokeStyle)
-      initBuffers(this.gl, renderPoints)
-      const shaderProgram = createShaderProgram(
-        this.gl,
-        pointsVertexShader(),
-        pointsFragmentShader(color[0], color[1], color[2])
-      )
-      const vertexPosition = this.gl.getAttribLocation(
-        shaderProgram,
-        'p_position'
-      )
-      this.gl.vertexAttribPointer(vertexPosition, 4, this.gl.FLOAT, false, 0, 0)
-      this.gl.enableVertexAttribArray(vertexPosition)
-      this.gl.drawArrays(this.gl.LINES, 0, renderPoints.length / 4)
-      this.gl.deleteProgram(shaderProgram)
-    } else {
-    }
+    Promise.all(this._asynTasks).then(() => {
+      if (this.lineWidth === 1) {
+        const color = toRgb(this.strokeStyle)
+        initBuffers(this.gl, renderPoints)
+        const shaderProgram = createShaderProgram(
+          this.gl,
+          pointsVertexShader(),
+          pointsFragmentShader(color[0], color[1], color[2])
+        )
+        const vertexPosition = this.gl.getAttribLocation(
+          shaderProgram,
+          'p_position'
+        )
+        this.gl.vertexAttribPointer(vertexPosition, 4, this.gl.FLOAT, false, 0, 0)
+        this.gl.enableVertexAttribArray(vertexPosition)
+        this.gl.drawArrays(this.gl.LINES, 0, renderPoints.length / 4)
+        this.gl.deleteProgram(shaderProgram)
+      } else {
+      }
+    })
   }
 
   strokeRect(x: number, y: number, width: number, height: number) {

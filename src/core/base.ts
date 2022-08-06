@@ -1,4 +1,5 @@
 import { warn, WARN_LEVEL } from '../utils'
+
 export let isWebGl2 = true
 export const createContext = (query: string) => {
   const dom: HTMLCanvasElement = document.querySelector(query)
@@ -59,7 +60,7 @@ export const createShaderProgram = (
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
     throw new Error(
       'Unable to initialize the shader program: ' +
-        gl.getProgramInfoLog(shaderProgram)
+      gl.getProgramInfoLog(shaderProgram)
     )
   }
   gl.useProgram(shaderProgram)
@@ -75,7 +76,7 @@ export const createShaderProgram = (
 export const initBuffers = (
   gl: WebGL2RenderingContext | WebGLRenderingContext,
   vertices: number[]
-):WebGLBuffer => {
+): WebGLBuffer => {
   const positionBuffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
@@ -84,7 +85,7 @@ export const initBuffers = (
 
 // * 设置属性，从缓冲中提取数据
 // todo
-export const injectAttribute2D = (gl:WebGLRenderingContext|WebGL2RenderingContext,buffer:WebGLBuffer,data:GLint) => {
-  gl.enableVertexAttribArray(data);
-  gl.vertexAttribPointer(data, 2, gl.FLOAT, false, 0, 0);
+export const injectAttribute2D = (gl: WebGLRenderingContext | WebGL2RenderingContext, data: GLint) => {
+  gl.enableVertexAttribArray(data)
+  gl.vertexAttribPointer(data, 2, gl.FLOAT, false, 0, 0)
 }
