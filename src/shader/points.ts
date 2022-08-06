@@ -1,8 +1,8 @@
 export const pointsVertexShader = () => {
   return /*glsl*/ `
-    attribute vec4 a_position;
+    attribute vec4 p_position;
     void main() {
-      gl_Position = a_position;
+      gl_Position = p_position;
     }
   `
 }

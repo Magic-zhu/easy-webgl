@@ -1,5 +1,5 @@
 import { createContext, Point, Texture, injectAttribute2D, Matrix4 } from 'src/core/'
-import { warn } from 'src/utils'
+import { toRgb, warn } from 'src/utils'
 import {
   pointsVertexShader,
   pointsFragmentShader,
@@ -12,7 +12,7 @@ import { loadImage } from '../index'
 export class EwContext {
   gl: WebGLRenderingContext | null = null
   program: null | WebGLProgram = null
-  strokeStyle: string = ''
+  strokeStyle: string = '#000000'
   lineWidth: number = 1
   strokeRgb: number[] = []
   _path = []
@@ -143,13 +143,11 @@ export class EwContext {
     dHeight?: number
   ) {
     const tx: Texture = await this._loadAndCreateTexture(image, this.gl)
-    this.gl.bindTexture(this.gl.TEXTURE_2D, tx.texture)
     const program = createShaderProgram(
       this.gl,
       imagePointShader_A,
       imageFragmentShader_A
     )
-    this.gl.useProgram(program)
     // 获取参数信息
     const positionLocation: GLint = this.gl.getAttribLocation(program, 'a_position')
     const texcoordLocation: GLint = this.gl.getAttribLocation(program, 'a_texcoord')
@@ -179,8 +177,8 @@ export class EwContext {
 
     let matrix = new Matrix4()
       .orthographic(0, this._target.width, this._target.height, 0, -1, 1)
-      .translate(dx, dy, 0)
       .scale(dWidth || tx.width, dHeight || tx.height, 1)
+      .translate(dx / this._target.width, dy / this._target.height, 0)
 
     // Set the matrix.
     this.gl.uniformMatrix4fv(matrixLocation, false, matrix)
@@ -188,6 +186,7 @@ export class EwContext {
     this.gl.uniform1i(textureLocation, 0)
     // 2 triangles, 6 vertices
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 6)
+    this.gl.deleteProgram(program)
   }
 
   private _drawImageC(
@@ -226,19 +225,20 @@ export class EwContext {
     }
 
     if (this.lineWidth === 1) {
+      const color = toRgb(this.strokeStyle)
       const shaderProgram = createShaderProgram(
         this.gl,
         pointsVertexShader(),
-        pointsFragmentShader(1.0, 0.5, 0.0)
+        pointsFragmentShader(color[0], color[1], color[2])
       )
       initBuffers(this.gl, renderPoints)
       const vertexPosition = this.gl.getAttribLocation(
         shaderProgram,
-        'a_position'
+        'p_position'
       )
       this.gl.vertexAttribPointer(vertexPosition, 4, this.gl.FLOAT, false, 0, 0)
       this.gl.enableVertexAttribArray(vertexPosition)
-      this.gl.drawArrays(this.gl.LINE_STRIP, 0, renderPoints.length / 4)
+      this.gl.drawArrays(this.gl.LINES, 0, renderPoints.length / 4)
     } else {
     }
   }
